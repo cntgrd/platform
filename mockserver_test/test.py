@@ -3,7 +3,7 @@ import sys
 import http.client
 from google.protobuf.json_format import MessageToJson
 
-URL = "69e90bbc-66f3-4019-9540-e5817e80f3c9.mock.pstmn.io"
+URL = "cf4f5b8e-99ee-46f1-96fb-428394f44234.mock.pstmn.io"
 
 sensorMsg = sensor_data_pb2.Quantity()
 sensorMsg.value = 110
@@ -19,7 +19,7 @@ print(jsonObj)
 
 
 conn = http.client.HTTPSConnection(URL)
-conn.request("GET", "/test")
+conn.request("GET", "/getsth")
 r1 = conn.getresponse()
 print(r1.status, r1.reason)
 data1 = r1.read()
