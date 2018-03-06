@@ -6,10 +6,25 @@
   "author": "Andrew Ksendzoff <dacoconuttman@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "serialport": "^6.1.1",
-    "udev": "^0.4.0"
+    "serialport": "^6.1.1"
   },
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "precommit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "devDependencies": {
+    "eslint": "^4.18.2",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.0"
   }
 }
