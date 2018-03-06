@@ -1,5 +1,5 @@
 const DeviceHandler = require('./DeviceHandler');
-console.log(DeviceHandler);
+
 const deviceHandler = new DeviceHandler();
 deviceHandler.start();
 
