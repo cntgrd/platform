@@ -1,6 +1,7 @@
-const DeviceHandler = require('./DeviceHandler');
+// const DeviceHandler = require('./DeviceHandler')
+const DummyHandler = require('./DummyHandler');
 
-const deviceHandler = new DeviceHandler();
+const deviceHandler = new DummyHandler();
 deviceHandler.start();
 
 deviceHandler.on('data', (data) => {
