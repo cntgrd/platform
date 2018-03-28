@@ -2,7 +2,6 @@
 const serialport = require('serialport');
 const EventEmitter = require('events');
 
-
 class DeviceHandler extends EventEmitter {
   constructor() {
     super();
