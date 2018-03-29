@@ -16,6 +16,7 @@ superagent
 
 superagent
     .post(url + '/postpb')
+    .send(deviceHandler.data)
     .end((err,res) => {
         if (err) { return console.log(err); }
         console.log(res.body);
