@@ -8,25 +8,23 @@ class DeviceHandler extends EventEmitter {
    * Finds all currently plugged in serial ports, filers whether or not
    * it's an Arduino, then creates new SerialPort instances
    */
-  constructor () {
+  constructor() {
     super();
     /**
      * @member {Array} ports
      * Array of serialport.SerialPort objects
      */
     this.ports = serialport.list()
-      .then(ports => {
-        const serialPorts = ports.filter(port => {
+      .then((ports) => {
+        const serialPorts = ports.filter((port) => {
           const manufacturer = port.manufacturer || 'fuck';
           const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
           return isArduino;
         })
-          .map(port => {
-            return new serialport.SerialPort(port.comName);
-          });
+          .map(port => new serialport.SerialPort(port.comName));
         return serialPorts;
       })
-      .catch(err => {
+      .catch((err) => {
         this.emit('error', err);
         throw new Error(err);
       });
@@ -62,12 +60,6 @@ class DeviceHandler extends EventEmitter {
       });
     });
   }
-}
-
-start () {
-  this.monitor.on('add', device => {
-    if(device.SUBSYSTEM === 'tty' && this.device)
-  })
 }
 
 module.exports = DeviceHandler;
