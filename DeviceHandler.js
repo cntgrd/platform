@@ -1,24 +1,36 @@
-// const udev = require('udev');
+const udev = require('udev');
 const serialport = require('serialport');
 const EventEmitter = require('events');
 
 class DeviceHandler extends EventEmitter {
-  constructor() {
+  /**
+   * @constructor
+   * Finds all currently plugged in serial ports, filers whether or not
+   * it's an Arduino, then creates new SerialPort instances
+   */
+  constructor () {
     super();
-    //    this.monitor = udev.monitor();
-    this.ports = {};
-    serialport.list()
-      .then((devices) => {
-        devices.filter(device => device.vendorId !== undefined)
-          .forEach((device) => {
-            console.log(device);
-            const name = device.comName;
-            const port = new serialport.SerialPort(device.comName, { baudRate: 9600 });
-            const newPort = {};
-            newPort[name] = port;
-            this.ports = { ...this.ports, ...newPort };
+    /**
+     * @member {Array} ports
+     * Array of serialport.SerialPort objects
+     */
+    this.ports = serialport.list()
+      .then(ports => {
+        const serialPorts = ports.filter(port => {
+          const manufacturer = port.manufacturer || 'fuck';
+          const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
+          return isArduino;
+        })
+          .map(port => {
+            return new serialport.SerialPort(port.comName);
           });
+        return serialPorts;
+      })
+      .catch(err => {
+        this.emit('error', err);
+        throw new Error(err);
       });
+    this.monitor = udev.monitor();
   }
 
   start() {
@@ -50,6 +62,12 @@ class DeviceHandler extends EventEmitter {
       });
     });
   }
+}
+
+start () {
+  this.monitor.on('add', device => {
+    if(device.SUBSYSTEM === 'tty' && this.device)
+  })
 }
 
 module.exports = DeviceHandler;
