@@ -2,6 +2,15 @@ const udev = require('udev');
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
 
+const getPorts = async () => {
+  const ports = await SerialPort.list();
+  return ports.filter((port) => {
+    const manufacturer = port.manufacturer || 'fuck';
+    const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
+    return isArduino;
+  }).map(port => new SerialPort(port.comName));
+};
+
 class DeviceHandler extends EventEmitter {
   /**
    * @constructor
@@ -10,26 +19,7 @@ class DeviceHandler extends EventEmitter {
    */
   constructor() {
     super();
-    SerialPort.list()
-      .then((ports) => {
-        console.log('getting plugged in arduinos');
-        const serialPorts = ports.filter((port) => {
-          const manufacturer = port.manufacturer || 'fuck';
-          const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
-          return isArduino;
-        }).map(port => new SerialPort(port.comName));
-        console.log('filtered ports: ');
-        console.dir(serialPorts);
-        this.ports = serialPorts;
-        console.log('serial ports: ');
-        console.dir(this.ports)
-      })
-      .catch((err) => {
-        this.emit('error', err);
-        console.error(err);
-        throw new Error(err);
-      });
-
+    this.ports = getPorts();
     console.dir(this.ports);
     this.monitor = udev.monitor();
   }
