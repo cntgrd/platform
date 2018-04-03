@@ -19,7 +19,7 @@ class DeviceHandler extends EventEmitter {
           return isArduino;
         }).map(port => new SerialPort(port.comName));
         console.log('filtered ports: ');
-        console.dir(seriapPorts);
+        console.dir(serialPorts);
         this.ports = serialPorts;
         console.log('serial ports: ');
         console.dir(this.ports)
