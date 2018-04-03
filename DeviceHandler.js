@@ -17,7 +17,7 @@ class DeviceHandler extends EventEmitter {
 
     this.ports = Serialport.list()
       .then((ports) => {
-        console.log('getting plugged in arduinos')
+        console.log('getting plugged in arduinos');
         const serialPorts = ports.filter((port) => {
           const manufacturer = port.manufacturer || 'fuck';
           const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
@@ -28,8 +28,11 @@ class DeviceHandler extends EventEmitter {
       })
       .catch((err) => {
         this.emit('error', err);
+        console.error(err);
         throw new Error(err);
       });
+
+    console.dir(this.ports);
     this.monitor = udev.monitor();
   }
 
@@ -49,6 +52,8 @@ class DeviceHandler extends EventEmitter {
         console.log(`deleted ${device.DEVNAME}`);
       }
     });
+
+    console.dir(this.ports);
 
     this.ports.forEach((port) => {
       port.on('data', (data) => {
