@@ -1,5 +1,5 @@
 const udev = require('udev');
-const Serialport = require('serialport');
+const SerialPort = require('serialport');
 const EventEmitter = require('events');
 
 class DeviceHandler extends EventEmitter {
@@ -10,27 +10,19 @@ class DeviceHandler extends EventEmitter {
    */
   constructor() {
     super();
-    /**
-     * @member {Array} ports
-     * Array of serialport objects
-     */
-    Serialport.list()
-    .then(ports => {
-      console.dir(ports);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-    Serialport.list()
+    SerialPort.list()
       .then((ports) => {
         console.log('getting plugged in arduinos');
         const serialPorts = ports.filter((port) => {
           const manufacturer = port.manufacturer || 'fuck';
           const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
           return isArduino;
-        })
-          .map(port => new Serialport(port.comName));
+        }).map(port => new SerialPort(port.comName));
+        console.log('filtered ports: ');
+        console.dir(seriapPorts);
         this.ports = serialPorts;
+        console.log('serial ports: ');
+        console.dir(this.ports)
       })
       .catch((err) => {
         this.emit('error', err);
@@ -46,7 +38,7 @@ class DeviceHandler extends EventEmitter {
     this.monitor.on('add', (device) => {
       if (device.SUBSYTEM === 'tty' && !this.devices[device.DEVNAME]) {
         console.log(`adding ${device.DEVNAME}`);
-        this.ports.push(new Serialport(device.DEVNAME, { baudRate: 9600 }));
+        this.ports.push(new SerialPort(device.DEVNAME, { baudRate: 9600 }));
         console.log(`added ${device.DEVNAME}`);
       }
     });
