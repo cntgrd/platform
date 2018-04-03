@@ -12,7 +12,7 @@ class DeviceHandler extends EventEmitter {
     super();
     /**
      * @member {Array} ports
-     * Array of serialport.SerialPort objects
+     * Array of serialport.Serialport objects
      */
     this.ports = serialport.list()
       .then((ports) => {
@@ -21,7 +21,7 @@ class DeviceHandler extends EventEmitter {
           const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
           return isArduino;
         })
-          .map(port => new serialport.SerialPort(port.comName));
+          .map(port => new serialport.Serialport(port.comName));
         return serialPorts;
       })
       .catch((err) => {
@@ -36,7 +36,7 @@ class DeviceHandler extends EventEmitter {
       if (device.SUBSYTEM === 'tty' && !this.devices[device.DEVNAME]) {
         const tmpDevice = {};
         const tmpName = device.DEVNAME;
-        const port = new serialport.SerialPort(tmpName, { baudRate: 9600 });
+        const port = new serialport.Serialport(tmpName, { baudRate: 9600 });
         tmpDevice[tmpName] = port;
         this.ports = { ...this.ports, ...tmpDevice };
         console.log(`added ${tmpName}`);
