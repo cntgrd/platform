@@ -14,6 +14,7 @@ class DeviceHandler extends EventEmitter {
      * @member {Array} ports
      * Array of serialport objects
      */
+
     this.ports = Serialport.list()
       .then((ports) => {
         const serialPorts = ports.filter((port) => {
@@ -21,7 +22,7 @@ class DeviceHandler extends EventEmitter {
           const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
           return isArduino;
         })
-          .map(port => new Serialport(port.comName));
+          .map((port) => new Serialport(port.comName));
         return serialPorts;
       })
       .catch((err) => {
@@ -34,18 +35,14 @@ class DeviceHandler extends EventEmitter {
   start() {
     this.monitor.on('add', (device) => {
       if (device.SUBSYTEM === 'tty' && !this.devices[device.DEVNAME]) {
-        const tmpDevice = {};
-        const tmpName = device.DEVNAME;
-        const port = new Serialport(tmpName, { baudRate: 9600 });
-        tmpDevice[tmpName] = port;
-        this.ports = { ...this.ports, ...tmpDevice };
-        console.log(`added ${tmpName}`);
+        this.ports.push(new Serialport(device.DEVNAME, { baudRate: 9600 }));
+        console.log(`added ${device.DEVNAME}`);
       }
     });
 
     this.monitor.on('remove', (device) => {
       if (device.SUBSYSTEM === 'tty') {
-        delete this.ports[device.DEVNAME];
+        this.ports.filter(port => port.path !== device.DEVNAME);
         console.log(`deleted ${device.DEVNAME}`);
       }
     });
