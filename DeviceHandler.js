@@ -1,5 +1,5 @@
 const udev = require('udev');
-const serialport = require('serialport');
+const Serialport = require('serialport');
 const EventEmitter = require('events');
 
 class DeviceHandler extends EventEmitter {
@@ -12,16 +12,16 @@ class DeviceHandler extends EventEmitter {
     super();
     /**
      * @member {Array} ports
-     * Array of serialport.Serialport objects
+     * Array of serialport objects
      */
-    this.ports = serialport.list()
+    this.ports = Serialport.list()
       .then((ports) => {
         const serialPorts = ports.filter((port) => {
           const manufacturer = port.manufacturer || 'fuck';
           const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
           return isArduino;
         })
-          .map(port => new serialport.Serialport(port.comName));
+          .map(port => new Serialport(port.comName));
         return serialPorts;
       })
       .catch((err) => {
@@ -36,7 +36,7 @@ class DeviceHandler extends EventEmitter {
       if (device.SUBSYTEM === 'tty' && !this.devices[device.DEVNAME]) {
         const tmpDevice = {};
         const tmpName = device.DEVNAME;
-        const port = new serialport.Serialport(tmpName, { baudRate: 9600 });
+        const port = new Serialport(tmpName, { baudRate: 9600 });
         tmpDevice[tmpName] = port;
         this.ports = { ...this.ports, ...tmpDevice };
         console.log(`added ${tmpName}`);
