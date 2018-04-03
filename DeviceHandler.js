@@ -15,7 +15,7 @@ class DeviceHandler extends EventEmitter {
      * Array of serialport objects
      */
 
-    this.ports = Serialport.list()
+    Serialport.list()
       .then((ports) => {
         console.log('getting plugged in arduinos');
         const serialPorts = ports.filter((port) => {
@@ -24,7 +24,7 @@ class DeviceHandler extends EventEmitter {
           return isArduino;
         })
           .map(port => new Serialport(port.comName));
-        return serialPorts;
+        this.ports = serialPorts;
       })
       .catch((err) => {
         this.emit('error', err);
@@ -48,7 +48,9 @@ class DeviceHandler extends EventEmitter {
     this.monitor.on('remove', (device) => {
       if (device.SUBSYSTEM === 'tty') {
         console.log(`removing ${device.DEVNAME}`);
-        this.ports.filter(port => port.path !== device.DEVNAME);
+        const oldPort = this.ports.filter(port => port.path === device.DEVNAME);
+        oldPort[0].close();
+        this.ports = this.ports.filter(port => port.path !== device.DEVNAME);
         console.log(`deleted ${device.DEVNAME}`);
       }
     });
