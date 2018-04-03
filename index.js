@@ -3,7 +3,7 @@ const DeviceHandler = require('./DeviceHandler');
 //const ArduinoHandler = require('./ArduinoHandler');
 
 const deviceHandler = new DeviceHandler();
-// deviceHandler.start();
+deviceHandler.start();
 
 deviceHandler.on('data', (data) => {
   console.log(data);
