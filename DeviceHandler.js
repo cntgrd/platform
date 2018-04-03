@@ -14,7 +14,13 @@ class DeviceHandler extends EventEmitter {
      * @member {Array} ports
      * Array of serialport objects
      */
-
+    Serialport.list()
+    .then(ports => {
+      console.dir(ports);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
     Serialport.list()
       .then((ports) => {
         console.log('getting plugged in arduinos');
