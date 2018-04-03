@@ -4,6 +4,8 @@ const EventEmitter = require('events');
 
 const getPorts = async () => {
   const ports = await SerialPort.list();
+  console.log('getPorts:');
+  console.dir(ports);
   return ports.filter((port) => {
     const manufacturer = port.manufacturer || 'fuck';
     const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
