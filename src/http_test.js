@@ -1,10 +1,7 @@
 const req = require('superagent');
-
-// replace with proper handler as needed
-const ArduinoHandler = require('./ArduinoHandler');
+const { ArduinoHandler, DeviceHandler, DummyHandler } = require('./handlers');
 
 const deviceHandler = new ArduinoHandler();
-
 const url = 'localhost:3000';
 
 deviceHandler.on('data', (data) => {
