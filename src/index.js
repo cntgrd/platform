@@ -1,7 +1,9 @@
 const { ArduinoHandler, DeviceHandler, DummyHandler } = require('./handlers');
 const SerialPort = require('serialport');
 
-const ports = await SerialPort.list();
+const ports = SerialPort.list().then(ports => {
+  return ports;
+});
 const deviceHandler = new DeviceHandler(ports);
 deviceHandler.start();
 
