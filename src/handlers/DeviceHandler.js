@@ -43,17 +43,19 @@ class DeviceHandler extends EventEmitter {
       }
     });
 
-    this.ports.forEach((port) => {
-      const parser = new SerialPort.parsers.Readline();
-      port.pipe(parser);
-      parser.on('data', (data) => {
-        this.emit('data', data);
+    while(true){
+      this.ports.forEach((port) => {
+        const parser = new SerialPort.parsers.Readline();
+        port.pipe(parser);
+        parser.on('data', (data) => {
+          this.emit('data', data);
+        });
+  
+        port.on('error', (err) => {
+          this.emit('error', err);
+        });
       });
-
-      port.on('error', (err) => {
-        this.emit('error', err);
-      });
-    });
+    }
   }
 }
 
