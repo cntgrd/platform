@@ -6,17 +6,17 @@
  * @return {Object} Formatted JSON
  */
 const jsonParser = (input) => {
-    let initJson = {};
-    try {
-      initJson = JSON.parse(input);
-    } catch (e) {
-      throw new Error('invalid JSON, possibly a serial error');
-    }
-    const finalJson = ((data) => {
-      // do stuff to the data here
-      return data;
-    })(initJson);
-    return finalJson;
+  let initJson = {};
+  try {
+    initJson = JSON.parse(input);
+  } catch (e) {
+    throw new Error('invalid JSON, possibly a serial error');
+  }
+  const finalJson = ((data) => {
+    // do stuff to the data here
+    return data;
+  })(initJson);
+  return finalJson;
 };
 
 /**
@@ -29,7 +29,17 @@ const jsonParser = (input) => {
 
 const protobuf = require('protobufjs');
 const protobufParser = (input) => {
-  
+  let initJson = {};
+    try {
+      initJson = JSON.parse(input);
+    } catch (e) {
+      throw new Error('invalid JSON, possibly a serial error');
+    }
+    const finalProto = ((data) => {
+      // do stuff to the data here
+      return data;
+    })(initJson);
+    return finalProto;
 };
 
 module.exports = { jsonParser, protobufParser };
