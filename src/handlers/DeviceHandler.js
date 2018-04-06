@@ -11,11 +11,15 @@ class DeviceHandler extends EventEmitter {
    */
   constructor(ports) {
     super();
-    this.ports = ports.filter((port) => {
-      const manufacturer = port.manufacturer || 'fuck';
-      const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
-      return isArduino;
-    }).map(port => new SerialPort(port.comName));
+    try {
+      this.ports = ports.filter((port) => {
+        const manufacturer = port.manufacturer || 'fuck';
+        const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
+        return isArduino;
+      }).map(port => new SerialPort(port.comName));
+    } catch (e) {
+      this.ports = [];
+    }
     this.monitor = udev.monitor();
   }
 
@@ -32,12 +36,11 @@ class DeviceHandler extends EventEmitter {
       if (device.SUBSYSTEM === 'tty') {
         console.log(`removing ${device.DEVNAME}`);
         const oldPort = this.ports.filter(port => port.path === device.DEVNAME);
-        oldPort[0].close();
         this.ports = this.ports.filter(port => port.path !== device.DEVNAME);
         console.log(`deleted ${device.DEVNAME}`);
       }
     });
-    
+
     this.ports.forEach((port) => {
       const parser = new SerialPort.parsers.Readline();
       port.pipe(parser);
