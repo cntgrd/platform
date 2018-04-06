@@ -2,6 +2,8 @@ const udev = require('udev');
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
 
+
+
 class DeviceHandler extends EventEmitter {
   /**
    * @constructor
@@ -31,6 +33,14 @@ class DeviceHandler extends EventEmitter {
         console.log(`adding ${device.DEVNAME}`);
         this.ports.push(new SerialPort(device.DEVNAME, { baudRate: 9600 }));
         console.log(`added ${device.DEVNAME}`);
+        const parser = new SerialPort.parsers.Readline();
+        this.ports[this.ports.length - 1].pipe(parser);
+        parser.on('data', (data) => {
+          this.emit('data', data);
+        });
+        this.ports[this.ports.length - 1].on('error', (err) => {
+          this.emit('error', err);
+        })
       }
     });
 
@@ -43,19 +53,18 @@ class DeviceHandler extends EventEmitter {
       }
     });
 
-    setInterval(() => {
-      this.ports.forEach((port) => {
-        const parser = new SerialPort.parsers.Readline();
-        port.pipe(parser);
-        parser.on('data', (data) => {
-          this.emit('data', data);
-        });
-  
-        port.on('error', (err) => {
-          this.emit('error', err);
-        });
+    // initial ports
+    this.ports.forEach((port) => {
+      const parser = new SerialPort.parsers.Readline();
+      port.pipe(parser);
+      parser.on('data', (data) => {
+        this.emit('data', data);
       });
-    }, 500);
+
+      port.on('error', (err) => {
+        this.emit('error', err);
+      });
+    });
 
   }
 
