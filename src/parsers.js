@@ -24,7 +24,10 @@ const jsonParser = (input) => {
  * the protobuf the server expects
  * @function protobufParser
  * @arg {string} input Raw JSON string from the Arduino
+ * @return {Protobuf} Protobuf for the server
  */
+
+const protobuf = require('protobufjs');
 const protobufParser = (input) => {
   
 };
