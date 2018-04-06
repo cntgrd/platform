@@ -1,17 +1,18 @@
 const req = require('superagent');
-const { ArduinoHandler, DeviceHandler, DummyHandler } = require('./handlers');
-const { jsonParser, protobufParser } = require('./parsers.js');
 
-// replace with whatever handler is needed
+// replace with proper handler as needed
+const ArduinoHandler = require('./ArduinoHandler');
+
 const deviceHandler = new ArduinoHandler();
+
 const url = 'localhost:3000';
 
 deviceHandler.on('data', (data) => {
   let jsonData = {};
   try {
-    jsonData = jsonParser(data);
+    jsonData = JSON.parse(data);
   } catch (e) {
-    console.log(e.message);
+    console.log('invalid JSON parsed');
   }
   req
     .post(`${url}/echo`)
@@ -32,4 +33,3 @@ deviceHandler.on('error', (err) => {
       console.log(res.body);
     });
 });
-
