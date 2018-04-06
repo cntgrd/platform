@@ -41,7 +41,9 @@ class DeviceHandler extends EventEmitter {
     console.dir(this.ports);
 
     this.ports.forEach((port) => {
-      port.on('data', (data) => {
+      const parser = new SerialPort.parser.Readline();
+      port.pipe(parser);
+      parser.on('data', (data) => {
         this.emit('data', data);
       });
 
