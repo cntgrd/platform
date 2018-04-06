@@ -2,27 +2,20 @@ const udev = require('udev');
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
 
-const getPorts = async () => {
-  const ports = await SerialPort.list();
-  console.log('getPorts:');
-  console.dir(ports);
-  return ports.filter((port) => {
-    const manufacturer = port.manufacturer || 'fuck';
-    const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
-    return isArduino;
-  }).map(port => new SerialPort(port.comName));
-};
-
 class DeviceHandler extends EventEmitter {
   /**
    * @constructor
+   * @arg {[Object]} ports Result of SerialPort.list()
    * Finds all currently plugged in serial ports, filers whether or not
    * it's an Arduino, then creates new SerialPort instances
    */
-  constructor() {
+  constructor(ports) {
     super();
-    this.ports = getPorts();
-    console.dir(this.ports);
+    this.ports = ports.filter((port) => {
+      const manufacturer = port.manufacturer || 'fuck';
+      const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
+      return isArduino;
+    }).map(port => new SerialPort(port.comName));
     this.monitor = udev.monitor();
   }
 

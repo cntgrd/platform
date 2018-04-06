@@ -11,6 +11,9 @@
     "protobufjs": "^6.8.6",
     "serialport": "^6.1.1"
   },
+  "optionalDependencies": {
+    "udev": "^0.4.0"
+  },
   "scripts": {
     "start": "node src/index.js"
   },
