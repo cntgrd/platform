@@ -43,7 +43,7 @@ class DeviceHandler extends EventEmitter {
       }
     });
 
-    while(true){
+    setInterval(() => {
       this.ports.forEach((port) => {
         const parser = new SerialPort.parsers.Readline();
         port.pipe(parser);
@@ -55,8 +55,10 @@ class DeviceHandler extends EventEmitter {
           this.emit('error', err);
         });
       });
-    }
+    }, 500);
+
   }
+
 }
 
 module.exports = DeviceHandler;
