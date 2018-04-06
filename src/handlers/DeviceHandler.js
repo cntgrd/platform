@@ -27,7 +27,7 @@ class DeviceHandler extends EventEmitter {
     this.monitor.on('add', (device) => {
       // console.log(`${device.DEVNAME} plugged in`);
       // console.dir(device);
-      if (device.SUBSYTEM === 'tty') {
+      if (device.SUBSYSTEM === 'tty') {
         console.log(`adding ${device.DEVNAME}`);
         this.ports.push(new SerialPort(device.DEVNAME, { baudRate: 9600 }));
         console.log(`added ${device.DEVNAME}`);
