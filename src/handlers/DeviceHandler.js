@@ -40,7 +40,7 @@ class DeviceHandler extends EventEmitter {
         });
         this.ports[this.ports.length - 1].on('error', (err) => {
           this.emit('error', err);
-        })
+        });
       }
     });
 

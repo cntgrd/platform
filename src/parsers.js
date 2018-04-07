@@ -1,3 +1,5 @@
+const uuid = require('../uuid'); // Station UUID
+
 /**
  * Transforms the JSON supplied by the Arduino into
  * the JSON the server expects
