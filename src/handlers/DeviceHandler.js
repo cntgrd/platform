@@ -59,8 +59,13 @@ class DeviceHandler extends EventEmitter {
     });
 
     this.ports.on('add', (event) => {
-      console.dir(event);
-    }); 
+      console.log(`ayy we added a thing to the array! ${event}`);
+      const port = event;
+      const parser = new SerialPort.parsers.Readline();
+      port.pipe(parser);
+      parser.on('data', data => this.emit('data', data));
+      port.on('error', err => this.emit('error', err));
+    });
 
     this.ports.on('remove', (event) => {
       console.dir(event);
