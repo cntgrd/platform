@@ -13,7 +13,7 @@ const fs = require('fs');
 })();
 
 const ports = SerialPort.list().then(ports => {
-  const deviceHandler = new DeviceHandler(ports);
+  const deviceHandler = new DeviceHandler(ports); 
   deviceHandler.start();
 
   deviceHandler.on('data', (data) => {

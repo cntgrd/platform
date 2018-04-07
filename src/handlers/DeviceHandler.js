@@ -1,8 +1,7 @@
-const udev = require('udev');
+// const udev = require('udev');
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
-
-
+const EventedArray = require('array-events');
 
 class DeviceHandler extends EventEmitter {
   /**
@@ -14,13 +13,13 @@ class DeviceHandler extends EventEmitter {
   constructor(ports) {
     super();
     try {
-      this.ports = ports.filter((port) => {
+      this.ports = new EventedArray(ports.filter((port) => {
         const manufacturer = port.manufacturer || 'fuck';
         const isArduino = manufacturer.includes('FTDI') || manufacturer.includes('Arduino');
         return isArduino;
-      }).map(port => new SerialPort(port.comName));
+      }).map(port => new SerialPort(port.comName)));
     } catch (e) {
-      this.ports = [];
+      this.ports = new EventedArray();
     }
     this.monitor = udev.monitor();
   }
@@ -34,13 +33,6 @@ class DeviceHandler extends EventEmitter {
         this.ports.push(new SerialPort(device.DEVNAME, { baudRate: 9600 }));
         console.log(`added ${device.DEVNAME}`);
         const parser = new SerialPort.parsers.Readline();
-        this.ports[this.ports.length - 1].pipe(parser);
-        parser.on('data', (data) => {
-          this.emit('data', data);
-        });
-        this.ports[this.ports.length - 1].on('error', (err) => {
-          this.emit('error', err);
-        });
       }
     });
 
@@ -64,6 +56,14 @@ class DeviceHandler extends EventEmitter {
       port.on('error', (err) => {
         this.emit('error', err);
       });
+    });
+
+    this.ports.on('add', (event) => {
+      console.dir(event);
+    }); 
+
+    this.ports.on('remove', (event) => {
+      console.dir(event);
     });
 
   }
