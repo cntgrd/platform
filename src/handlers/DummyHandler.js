@@ -20,7 +20,7 @@ class DummyHandler extends EventEmitter {
 
   start() {
     setInterval(() => {
-      this.emit('data', this.data);
+      this.emit('data', JSON.stringify(this.data));
       if (Math.random() >= 0.8) {
         this.emit('error', {
           error: 'test error',

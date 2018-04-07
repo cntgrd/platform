@@ -1,4 +1,4 @@
-// const udev = require('udev');
+const udev = require('udev');
 const SerialPort = require('serialport');
 const EventEmitter = require('events');
 const EventedArray = require('array-events');
