@@ -1,5 +1,8 @@
 const DummyHandler = require('./DummyHandler');
 const superagent = require('superagent');
+const uuidv4 = require('uuid/v4');
+
+
 
 const deviceHandler = new DummyHandler();
 
@@ -13,7 +16,7 @@ console.log(ts);
 
 var buffer = deviceHandler.data;
 buffer.timestamp = ts;
-
+buffer.uuid = uuidv4();
 console.log(buffer);
 
 superagent
